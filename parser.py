@@ -49,12 +49,12 @@ MM_R_STATS_SOLO = {'num_iter': 'iter', 'num_matvec': 'matvec', 'num_solve': 'sol
               'sec_fact': 'fact', 'sec_solve':'solve', 'sec_orth': 'orth', 'sec_total': 'total',
             'max_res': 'max residual'}
 
-MM_P_STATS_SLICE = {'num_ev':'# of eigs', 'num_deg': 'deg', 'num_iter': 'iter', 'num_matvec': 'matvec',
-            'sec_matvec': 'matvec', 'sec_orth': 'orth', 'sec_total': 'total',
-            'max_res': 'max residual'}
-MM_R_STATS_SLICE = {'num_ev':'# of eigs', 'num_iter': 'iter', 'num_matvec': 'matvec', 'num_solve': 'solve',
-              'sec_fact': 'fact', 'sec_solve':'solve', 'sec_orth': 'orth', 'sec_total': 'total',
-            'max_res': 'max residual'}
+MM_P_STATS_SLICE = ['num_ev', 'num_deg', 'num_iter', 'num_matvec',
+            'sec_matvec', 'sec_orth', 'sec_total',
+            'max_res']
+MM_R_STATS_SLICE = ['num_ev', 'num_iter', 'num_matvec', 'num_solve',
+              'sec_fact', 'sec_solve', 'sec_orth', 'sec_total',
+            'max_res']
 MM_HEADER = ['deg', 'iter', 'matvec', ['CPU time (sec)', ['matvec', 'orth',
                                                           'total']], 'max\
              residual']
@@ -265,12 +265,12 @@ class Slice(object):
         ret = ""
         if self.parent.mat_type == "MM" and self.parent.filter_type == "P":
             ret += "[%s, %s]"% (self.interval_left, self.interval_right)
-            for pair in MM_P_STATS_SLICE.items():
-                ret += "& $%s$" % self.attrs[pair[0]]
+            for pair in MM_P_STATS_SLICE:
+                ret += "& $%s$" % self.attrs[pair]
         if self.parent.mat_type == "MM" and self.parent.filter_type == "R":
             ret += self.name_to_latex()
-            for pair in MM_R_STATS_SLICE.items():
-                ret += "& $%s$" % self.attrs[pair[0]]
+            for pair in MM_R_STATS_SLICE:
+                ret += "& $%s$" % self.attrs[pair]
         ret += "\\\\"
         return ret
 
