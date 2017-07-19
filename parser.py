@@ -59,7 +59,7 @@ MM_R_STATS_SLICE = ['num_ev', 'num_iter', 'num_matvec', 'num_solve',
 MM_HEADER = ['deg', 'iter', 'matvec', ['CPU time (sec)', ['matvec', 'orth',
                                                           'total']], 'max\
              residual']
-STATS_PREFIX = ['run-time', 'stats', 'stdout']
+STATS_PREFIX = ['run-time', 'stats']
 OUT_PREFIX = ['MMPLanN', 'MMPLanR', 'MMRLanN', 'MMRLanR']
 
 def parse_matrix_output(stats_file_name, out_file_name, obj):
@@ -396,26 +396,26 @@ def find_stats_file(directory):
     candidates = list(filter(lambda x: x.startswith(tuple(STATS_PREFIX)), files))
     if(len(candidates) > 1):
         print('Many candidates for stat file found: %s' % candidates)
-        return
+        exit(-1)
     elif(len(candidates) == 1):
         print('Using only candidatefor stat file: %s' % candidates[0])
         return '%s/%s' % (directory,candidates[0])
     elif(len(candidates) == 0):
         print('No stat file candidate found, please supply one with -s')
-        return
+        exit(-1)
 
 def find_out_file(directory):
     files = os.listdir('%s/OUT' % directory)
     candidates = list(filter(lambda x: x.startswith(tuple(OUT_PREFIX)), files))
     if(len(candidates) > 1):
         print('Many candidates for stat file found: %s' % candidates)
-        return
+        exit(-1)
     elif(len(candidates) == 1):
         print('Using only candidatefor stat file: %s' % candidates[0])
         return '%s/OUT/%s' % (directory,candidates[0])
     elif(len(candidates) == 0):
         print('No stat file candidate found, please supply one with -s')
-        return
+        exit(-1)
 
 
 
@@ -444,9 +444,9 @@ if __name__ == "__main__":
     if args.list is not None:
         for directory in args.list:
             test_obj = Result()
-            stats = find_stats_file(direcotry)
+            stats = find_stats_file(directory)
             inp = find_out_file(directory)
-            parse_matrix_output(args.stats, args.input, test_obj)
+            parse_matrix_output(stats, inp, test_obj)
             print(test_obj.to_latex())
         print('Finished parsing list')
         exit(0)
