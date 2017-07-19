@@ -42,12 +42,12 @@ SLICE_REGEX = r'\[\s+([\-0-9.]+e.[\-0-9]) ,\s+([\-0-9.]+e.[\-0-9]+)\]'
 PARTITION_RERGEX = r'Partition the interval of interest \[([\-0-9.]+),([\-0-9.]+)\] into ([0-9]+) slice'
 
 
-MM_P_STATS_SOLO = {'num_deg': 'deg', 'num_iter': 'iter', 'num_matvec': 'matvec',
-            'sec_matvec': 'matvec', 'sec_orth': 'orth', 'sec_total': 'total',
-            'max_res': 'max residual'}
-MM_R_STATS_SOLO = {'num_iter': 'iter', 'num_matvec': 'matvec', 'num_solve': 'solve',
-              'sec_fact': 'fact', 'sec_solve':'solve', 'sec_orth': 'orth', 'sec_total': 'total',
-            'max_res': 'max residual'}
+MM_P_STATS_SOLO = ['num_deg', 'num_iter', 'num_matvec',
+            'sec_matvec', 'sec_orth', 'sec_total',
+            'max_res']
+MM_R_STATS_SOLO = ['num_iter', 'num_matvec', 'num_solve',
+              'sec_fact', 'sec_solve', 'sec_orth', 'sec_total',
+            'max_res']
 
 MM_P_STATS_SLICE = ['num_ev', 'num_deg', 'num_iter', 'num_matvec',
             'sec_matvec', 'sec_orth', 'sec_total',
@@ -359,30 +359,30 @@ class Result(object):
         elif(len(self.slices) == 1):
             if self.mat_type == "MM" and self.filter_type == "P":
                 ret += self.name_to_latex()
-                for pair in MM_P_STATS_SOLO.items():
-                    if pair[0] in self.attrs:
-                        if pair[0] == "max_res":
-                            ret += "& %s" % res_to_latex(self.attrs[pair[0]])
+                for pair in MM_P_STATS_SOLO:
+                    if pair in self.attrs:
+                        if pair == "max_res":
+                            ret += "& %s" % res_to_latex(self.attrs[pair])
                         else:
-                            ret += "& $%s$" % self.attrs[pair[0]]
+                            ret += "& $%s$" % self.attrs[pair]
                     else:
-                        if pair[0] == "max_res":
-                            ret += "& %s" % res_to_latex(self.slices[0].attrs[pair[0]])
+                        if pair == "max_res":
+                            ret += "& %s" % res_to_latex(self.slices[0].attrs[pair])
                         else:
-                            ret += "& $%s$" % self.slices[0].attrs[pair[0]]
+                            ret += "& $%s$" % self.slices[0].attrs[pair]
             if self.mat_type == "MM" and self.filter_type == "R":
                 ret += self.name_to_latex()
                 for pair in MM_R_STATS_SOLO.items():
-                    if pair[0] in self.attrs:
-                        if pair[0] == "max_res":
-                            ret += "& %s" % res_to_latex(self.attrs[pair[0]])
+                    if pair in self.attrs:
+                        if pair == "max_res":
+                            ret += "& %s" % res_to_latex(self.attrs[pair])
                         else:
-                            ret += "& $%s$" % self.attrs[pair[0]]
+                            ret += "& $%s$" % self.attrs[pair]
                     else:
-                        if pair[0] == "max_res":
-                            ret += "& %s" % res_to_latex(self.slices[0].attrs[pair[0]])
+                        if pair == "max_res":
+                            ret += "& %s" % res_to_latex(self.slices[0].attrs[pair])
                         else:
-                            ret += "& $%s$" % self.slices[0].attrs[pair[0]]
+                            ret += "& $%s$" % self.slices[0].attrs[pair]
         elif(len(slices) == 0):
             print('No slices to output')
             exit(-1)
