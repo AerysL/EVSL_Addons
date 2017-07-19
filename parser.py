@@ -12,6 +12,7 @@ appropriate output.
 import re
 import mmap
 import argparse
+import os
 STATS = {
     r"Iterative solver": [r"([0-9.]+)", ["sec_total"]],
     r"Pol\(A\)\*v": [r"([0-9.]+)\s\(\s*([0-9]+), avg ([0-9.]+)\)",
@@ -58,7 +59,8 @@ MM_R_STATS_SLICE = ['num_ev', 'num_iter', 'num_matvec', 'num_solve',
 MM_HEADER = ['deg', 'iter', 'matvec', ['CPU time (sec)', ['matvec', 'orth',
                                                           'total']], 'max\
              residual']
-
+STATS_PREFIX = ['run-time', 'stats', 'stdout']
+OUT_PREFIX = ['MMPLanN', 'MMPLanR', 'MMRLanN', 'MMRLanR']
 
 def parse_matrix_output(stats_file_name, out_file_name, obj):
     with open(stats_file_name) as f:
@@ -389,29 +391,78 @@ class Result(object):
         ret += "\\\\"
         return ret
 
+def find_stats_file(directory):
+    files = os.listdir(directory)
+    candidates = list(filter(lambda x: x.startswith(tuple(STATS_PREFIX)), files))
+    if(len(candidates) > 1):
+        print('Many candidates for stat file found: %s' % candidates)
+        return
+    elif(len(candidates) == 1):
+        print('Using only candidatefor stat file: %s' % candidates[0])
+        return '%s/%s' % (directory,candidates[0])
+    elif(len(candidates) == 0):
+        print('No stat file candidate found, please supply one with -s')
+        return
+
+def find_out_file(directory):
+    files = os.listdir('%s/OUT' % directory)
+    candidates = list(filter(lambda x: x.startswith(tuple(OUT_PREFIX)), files))
+    if(len(candidates) > 1):
+        print('Many candidates for stat file found: %s' % candidates)
+        return
+    elif(len(candidates) == 1):
+        print('Using only candidatefor stat file: %s' % candidates[0])
+        return '%s/OUT/%s' % (directory,candidates[0])
+    elif(len(candidates) == 0):
+        print('No stat file candidate found, please supply one with -s')
+        return
+
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-s', '--stats', default='run-time.txt',
+        '-s', '--stats', 
         help="""The stats file, which is referred to as fstats internally. 
         Looks like:
           Timing (sec):
         Iterative solver   : ...""")
     parser.add_argument(
-        '-i', '--input', default='',
+        '-i', '--input', 
         help="""The outputfile, should be found in OUT/*. Starts with:
         MATRIX:...
         Partition the interval of interest ...
     """)
+    parser.add_argument(
+        '-d', '--dir', default=".",
+        help="""Directory to look for the stats and OUT file""")
+    parser.add_argument(
+        '-l', '--list',  nargs='+',
+        help="""Directory to look for the stats and OUT file""")
     args = parser.parse_args()
+        
+    if args.list is not None:
+        for directory in args.list:
+            test_obj = Result()
+            stats = find_stats_file(args.dir)
+            inp = find_out_file(args.dir)
+            parse_matrix_output(args.stats, args.input, test_obj)
+            print(test_obj.to_latex())
+        print('Finished parsing list')
+        exit(0)
+
 
     if args.stats is None:
         args.stats = find_stats_file(args.dir)
+        if not args.stats:
+            print('No stats file found')
+            exit(-1)
 
     if args.input is None:
         args.input = find_out_file(args.dir)
+        if not args.input:
+            print('No OUT file found')
+            exit(-1)
 
     test_obj = Result()
     parse_matrix_output(args.stats, args.input, test_obj)
