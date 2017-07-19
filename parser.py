@@ -137,7 +137,7 @@ def find_ev_check(data_left):
 
 
 def res_to_latex(res):
-    res_reg = r"([0-9.])+e(.[0-9]+)"
+    res_reg = r"([0-9.]+)e(.[0-9]+)"
     match = re.match(res_reg, str(res))
     return "$%s\\!\\times\\!10^{%s}$" % (match.groups()[0], match.groups()[1])
 
