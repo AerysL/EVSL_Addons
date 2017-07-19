@@ -444,8 +444,8 @@ if __name__ == "__main__":
     if args.list is not None:
         for directory in args.list:
             test_obj = Result()
-            stats = find_stats_file(args.dir)
-            inp = find_out_file(args.dir)
+            stats = find_stats_file(direcotry)
+            inp = find_out_file(directory)
             parse_matrix_output(args.stats, args.input, test_obj)
             print(test_obj.to_latex())
         print('Finished parsing list')
