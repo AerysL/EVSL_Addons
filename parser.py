@@ -266,11 +266,12 @@ class Slice(object):
         if self.parent.mat_type == "MM" and self.parent.filter_type == "P":
             ret += "[%s, %s]"% (self.interval_left, self.interval_right)
             for pair in MM_P_STATS_SLICE.items():
-                ret += "& %s" % self.attrs[pair[0]]
+                ret += "& $%s$" % self.attrs[pair[0]]
         if self.parent.mat_type == "MM" and self.parent.filter_type == "R":
             ret += self.name_to_latex()
             for pair in MM_R_STATS_SLICE.items():
-                ret += "& %s" % self.attrs[pair[0]]
+                ret += "& $%s$" % self.attrs[pair[0]]
+        ret += "\\\\"
         return ret
 
 
@@ -287,6 +288,7 @@ class Result_list(object):
         if self.mat_type == "MM":
             for item in self.res.values():
                 ret += '%s\n' % item.to_latex()
+        ret += "\\\\"
         return ret
 
 
@@ -362,12 +364,12 @@ class Result(object):
                         if pair[0] == "max_res":
                             ret += "& %s" % res_to_latex(self.attrs[pair[0]])
                         else:
-                            ret += "& %s" % self.attrs[pair[0]]
+                            ret += "& $%s$" % self.attrs[pair[0]]
                     else:
                         if pair[0] == "max_res":
                             ret += "& %s" % res_to_latex(self.slices[0].attrs[pair[0]])
                         else:
-                            ret += "& %s" % self.slices[0].attrs[pair[0]]
+                            ret += "& $%s$" % self.slices[0].attrs[pair[0]]
             if self.mat_type == "MM" and self.filter_type == "R":
                 ret += self.name_to_latex()
                 for pair in MM_R_STATS_SOLO.items():
@@ -375,15 +377,16 @@ class Result(object):
                         if pair[0] == "max_res":
                             ret += "& %s" % res_to_latex(self.attrs[pair[0]])
                         else:
-                            ret += "& %s" % self.attrs[pair[0]]
+                            ret += "& $%s$" % self.attrs[pair[0]]
                     else:
                         if pair[0] == "max_res":
                             ret += "& %s" % res_to_latex(self.slices[0].attrs[pair[0]])
                         else:
-                            ret += "& %s" % self.slices[0].attrs[pair[0]]
+                            ret += "& $%s$" % self.slices[0].attrs[pair[0]]
         elif(len(slices) == 0):
             print('No slices to output')
             exit(-1)
+        ret += "\\\\"
         return ret
 
 
