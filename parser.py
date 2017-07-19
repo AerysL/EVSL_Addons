@@ -1,3 +1,14 @@
+"""
+Parses the output and stats file from EVSL. Currently tested on MMPLanN, but
+should work for for all matrix market reading libraries.
+Example call:
+
+    ./MMPlanN.ex > stats.txt
+    python parser.py -i OUT/MMPlanN_stiff1 -s stats.txt
+
+Should be able to to detect if you are using one or many slices and give
+appropriate output.
+"""
 import re
 import mmap
 import argparse
