@@ -35,11 +35,11 @@ DEG_REGEX = r'\s+polynomial deg ([0-9]+)'
 NAME_REGEX = r'MATRIX: ([!-~]+)...'
 ITERATION_REGEX = r'k\s+([0-9]+): nconv\s+[0-9]+\s+tr1\s+'
 EV_START_REGEX = r'\s+Computed \[([0-9]+) out of ([0-9]+) estimated\]\s+'
-SUBINTERVAL_REGEX = r'\s+subinterval: \[\s+([0-9.]+e.[0-9]+) ,\s+([0-9.]+e.[0-9]+)'
-EV_REGEX = r'\s+([0-9.]+e.[0-9]+)\s+([0-9.]+e.[0-9]+)'
+SUBINTERVAL_REGEX = r'\s+subinterval: \[\s+(\-?[0-9.]+e.\-?[0-9]+) ,\s+(\-?[0-9.]+e.\-?[0-9]+)'
+EV_REGEX = r'\s+(\-?[0-9.]+e.[0-9]+)\s+(\-?[0-9.]+e.[0-9]+)'
 SLICE_START_REGEX = r'Steb 1b: Slices found:'
-SLICE_REGEX = r'\[\s+([0-9.]+e.[0-9]) ,\s+([0-9.]+e.[0-9]+)\]'
-PARTITION_RERGEX = r'Partition the interval of interest \[([0-9.]+),([0-9.]+)\] into ([0-9]+) slice'
+SLICE_REGEX = r'\[\s+([\-0-9.]+e.[\-0-9]) ,\s+([\-0-9.]+e.[\-0-9]+)\]'
+PARTITION_RERGEX = r'Partition the interval of interest \[([\-0-9.]+),([\-0-9.]+)\] into ([0-9]+) slice'
 
 
 MM_P_STATS_SOLO = {'num_deg': 'deg', 'num_iter': 'iter', 'num_matvec': 'matvec',
@@ -94,6 +94,7 @@ def handle_regex_stuff(line):
 
 def find_partition_info(data_left):
     match = re.match(PARTITION_RERGEX, data_left)
+    print(match)
     return match
 
 
@@ -133,6 +134,7 @@ def find_ev_start(data_left):
 
 def find_ev_check(data_left):
     match = re.match(EV_REGEX, data_left)
+    print(match)
     return match
 
 
@@ -193,6 +195,7 @@ def get_subinterval(data, obj):
         if subinterval_info:
             obj.interval_left = float(subinterval_info.groups()[0])
             obj.interval_right = float(subinterval_info.groups()[1])
+            print('found')
             break
 
 def get_mat_name(data, obj):
@@ -207,6 +210,7 @@ def get_partition_info(data, obj):
     for line in data:
         partition_info = find_partition_info(line)
         if partition_info:
+            print('found')
             obj.interval_left = float((partition_info.groups()[0]))
             obj.interval_right = float((partition_info.groups()[1]))
             obj.num_slices = int((partition_info.groups()[2]))
@@ -216,12 +220,16 @@ def parse_out(data, obj):
     get_mat_name(data, obj)
     get_partition_info(data, obj)
     for i in range(obj.num_slices):
+        print(i)
         new_slice = obj.slices[i]
         get_subinterval(data, new_slice)
         if obj.filter_type == "P":
             get_deg(data, new_slice)
+            print(new_slice)
         get_iterations(data, new_slice)
+        print(new_slice)
         get_res(data, new_slice)
+        print(new_slice)
     return obj
     # Go until start of interation checks
 
