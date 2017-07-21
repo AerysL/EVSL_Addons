@@ -4,7 +4,22 @@ should work for for all matrix market reading libraries.
 Example call:
 
     ./MMPlanN.ex > stats.txt
-    python parser.py -i OUT/MMPlanN_stiff1 -s stats.txt
+    python /path/to/parser.py -i OUT/MMPlanN_stiff1 -s stats.txt
+
+    Or, using the automatic detection of files
+
+    python /path/to/parser.py -d .
+
+    Which as -d defaults to . , can be shortened to
+    python /path/to/parser.py
+
+    Should you have a layout similar to
+    Ge87H76
+        OUT/MMPLanN_*
+        stats*
+    Ge87H76
+        OUT/MMPLanN_*
+        stats*
 
 Should be able to to detect if you are using one or many slices and give
 appropriate output.

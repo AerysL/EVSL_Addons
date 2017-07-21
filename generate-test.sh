@@ -28,8 +28,8 @@ A_BOUND=0 #NS
 B_BOUND=1 #NS
 #endif
 
-EVSL_DIR="/home/saady/shared/EVSL" #NO SLASH #Where there EVSL Library is
-GEN_DIR="/home/saady/erlan086/tests" #NO SLASH #Where to output the test
+EVSL_DIR="/home/luke/dev/EVSL" #NO SLASH #Where there EVSL Library is
+GEN_DIR="/home/luke/tests" #NO SLASH #Where to output the test
 
 EMAIL_ADDR="erlan086@umn.edu" #Your Email
 EMAL_OPT="abe" # On abort, begin, and error
