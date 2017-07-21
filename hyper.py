@@ -23,10 +23,10 @@ NUM_USED_THREADS = [22]
 MKL_DYNAMIC = ["false"]
 OMP_DYNAMIC = ["false"]
 MAT_TYPE = ["MM"]
-METHOD_RESTART = ["R"]
+METHOD_RESTART = ["P"]
 METHOD_FILTER = ["P"] # , "R"]
 METHOD_LANCZOS = ["Lan"]
-MAT_NAME = ["Ge87H76"] #,"Ge99H100", "Si41Ge41H72", "Si87H76", "Ga41As41H72"]
+MAT_NAME = ["Ge87H76","Ge99H100", "Si41Ge41H72", "Si87H76", "Ga41As41H72"]
 #MAT_NAME = ["LAP"]
 NUM_ALLOC_MINUTES_LONG = [20]
 NUM_ALLOC_HOURS_LONG = [0]
@@ -53,8 +53,8 @@ BASE_GEN_DIR = "/home/saady/erlan086/tests"
 VARS = [ NUM_ALLOC_RAM,   NUM_USED_THREADS, MKL_DYNAMIC, OMP_DYNAMIC, MAT_TYPE, METHOD_RESTART, METHOD_FILTER, METHOD_LANCZOS, MAT_NAME, EIG_PROB, MAT_NZ, MAT_NY, MAT_NX, NUM_SLICES, EMAIL_OPT, EMAIL_ADDR, A_BOUND, B_BOUND]
 NAMES =["NAR",  "NUT",  "MD", "OD", "MT", "MR", "MF", "ML", "MN", "EIG_PROB", "NZ", "NY", "NX", "NS", "EMAIL_OPT", "EMAIL_ADDR", "A_BOUND", "B_BOUND"]
 
-ZIPPED = zip(NAMES, VARS)
-CONTROLS = map(lambda(x,y): (x, y[0]), filter(lambda (x,y): len(y) == 1, ZIPPED))
+ZIPPED = list(zip(NAMES, VARS))
+CONTROLS = [(x_y2[0], x_y2[1][0]) for x_y2 in [x_y for x_y in ZIPPED if len(x_y[1]) == 1]]
 CONTROL_SUBDIR = "_".join("%s=%s" % tup for tup in CONTROLS)
 GEN_DIR = BASE_GEN_DIR + "/" +  CONTROL_SUBDIR + str(int(time.time()))
 
@@ -62,13 +62,13 @@ GEN_DIR = BASE_GEN_DIR + "/" +  CONTROL_SUBDIR + str(int(time.time()))
 def generate_wrapper_s(IN_VARS):
 	(NAR,  NUT,  MD, OD, MT, MR, MF, ML, MN, EIG_PROB, NZ, NY, NX, NS,EMAIL_OPT, EMAIL_ADDR, A_BOUND, B_BOUND) = IN_VARS
 	print('here')
-	TEST = zip(NAMES, IN_VARS)
-	COM = "./generate-test.sh"
+	TEST = list(zip(NAMES, IN_VARS))
+	COM = "%s/generate-test.sh" % os.path.dirname(os.path.realpath(__file__))
 	ARGS = list("--%s=%s" % (x,y) for (x,y) in TEST)
 	ARGS.insert(0,COM)
-	MY_ZIPPED = zip(NAMES, VARS, IN_VARS)
+	MY_ZIPPED = list(zip(NAMES, VARS, IN_VARS))
 	print('there')
-	PARAMS = map(lambda(x,y,z): (x, z), filter(lambda(x,y,z): len(y) > 1, MY_ZIPPED))
+	PARAMS = [(x_y_z1[0], x_y_z1[2]) for x_y_z1 in [x_y_z for x_y_z in MY_ZIPPED if len(x_y_z[1]) > 1]]
 	print('kere')
 	NAME = "_".join("%s=%s" % tup for tup in PARAMS)
 	print(NAME)
@@ -89,7 +89,7 @@ def generate_wrapper_s(IN_VARS):
 	
 if __name__ == "__main__":
 	print(GEN_DIR)
-	ZIPPED = zip(NAMES, VARS)
+	ZIPPED = list(zip(NAMES, VARS))
 	try:
 	    os.makedirs(GEN_DIR)
 	except OSError as e:
